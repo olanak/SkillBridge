@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
 import authRoutes from "./routes/authRoutes.js";
+import courseRoutes from "./routes/courseRoutes.js";
+import opportunityRoutes from "./routes/opportunityRoutes.js";
 
 dotenv.config();
 
@@ -16,6 +18,8 @@ app.get("/", (req, res) => {
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/courses", courseRoutes);
+app.use("/api/opportunities", opportunityRoutes);
 
 // Connect MongoDB
 mongoose
