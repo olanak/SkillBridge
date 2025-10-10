@@ -1,0 +1,17 @@
+# Dependencies
+/node_modules
+/client/node_modules
+
+# Build folder
+/client/build
+
+# Dotenv environment variables file
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Mac and Windows system files
+.DS_Store
+Thumbs.db
