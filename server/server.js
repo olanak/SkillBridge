@@ -1,14 +1,20 @@
-// Import Express framework
-const express = require('express'); 
+const dotenv = require('dotenv'); // Import dotenv to manage environment variables
+const express = require('express'); // Import Express framework
+const connectDB = require('./config/db'); // Import the connection function
 
-//initialize express app
-const app = express(); 
+// Load environment variables
+dotenv.config();
 
-// Define the port to run the server on
-const PORT = process.env.PORT || 5000; 
+// Connect to the database
+connectDB();
+
+const app = express(); //initialize express app
+const PORT = process.env.PORT || 5000; // Define the port to run the server on
+
+
 
 // This handles GET requests to the root URL ('/')
-app.get('/', (req , res ) => {
+app.get('/', (req, res) => {
     res.send('API is running...');
 });
 
