@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken'); // Import jsonwebtoken
 const User = require('../../models/user'); // Import the User model
 
 // @route   POST api/users/register
@@ -40,5 +41,50 @@ router.post('/register', async (req, res) => {
     res.status(500).send('Server error');
   }
 });
+
+// @route   POST api/users/login
+// @desc    Authenticate user & get token
+// @access  Public
+router.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    // 1. Check if user exists
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({ msg: 'Invalid credentials' });
+    }
+
+    // 2. Compare submitted password with the stored hashed password
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({ msg: 'Invalid credentials' });
+    }
+    
+    // 3. If credentials are correct, create a JWT payload
+    const payload = {
+      user: {
+        id: user.id, // Mongoose uses 'id' as a virtual getter for '_id'
+      },
+    };
+
+    // 4. Sign the token
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }, // Token expires in 1 hour
+      (err, token) => {
+        if (err) throw err;
+        res.json({ token }); // Send the token back to the client
+      }
+    );
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
 
 module.exports = router;
