@@ -11,7 +11,10 @@ connectDB();
 const app = express(); //initialize express app
 const PORT = process.env.PORT || 5000; // Define the port to run the server on
 
+// Init Middleware to parse JSON bodies
+app.use(express.json()); 
 
+app.use('/api/users', require('./routes/api/user')); // Use the user routes
 
 // This handles GET requests to the root URL ('/')
 app.get('/', (req, res) => {
