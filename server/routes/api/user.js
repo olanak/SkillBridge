@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken'); // Import jsonwebtoken
 const User = require('../../models/user'); // Import the User model
+const auth = require('../../middleware/authMiddleware'); // Import the middleware
 
 // @route   POST api/users/register
 // @desc    Register a new user
@@ -86,5 +87,18 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// @route   GET api/users/me
+// @desc    Get current user's data
+// @access  Private
+router.get('/me', auth, async (req, res) => {
+  try {
+    // req.user.id is accessible because of our authMiddleware
+    const user = await User.findById(req.user.id).select('-password');
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
 
 module.exports = router;
